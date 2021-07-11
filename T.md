@@ -21,8 +21,13 @@ Settings
 ### order
 The information on the order for each beverage, required properties are size, username and the beverage.
 Adding other extra ingredients in the order
+Edit order quantities 
+
+### ingredient
 
 ### stock
+
+
 
 
 
@@ -44,5 +49,4 @@ Adding other extra ingredients in the order
 Arrange someway to implement a queue for the orders, using node.js and mongodb (maybe some alternative library like 'queue-mongodb')
 
 ### Implement queue system for the beverage orders
-
 

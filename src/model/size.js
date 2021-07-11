@@ -1,53 +1,27 @@
-const mongoose  = require('mongoose');
+const mongoose  = require('mongoose')
 const Schema    = mongoose.Schema;
-const helper    = require('../helper');
 
 /**
- * Ingredient schema
+ * Size schema
  */
-const IngredientSchema = new Schema({
+const SizeSchema = new Schema({
     name: {
         type    : String,
         required: true,
         unique  : true
-    },
-    // Measurement
-    unit: {
-        type    : String,
-        required: true
     }
-    
-}, {collection: 'ingredients'})
+}, {collection: 'sizes'});
 
 /**
  * Methods
  */
-IngredientSchema.methods = {
+SizeSchema.methods = {
     /**
-     * Change the ingredients unit of measurement
-     * 
-     * @param {String} newUnit 
-     */
-    changeUnit: function(newUnit) {
-        try {
-            if(typeof newUnit != "string") {
-                throw new Error('The unit provided is not a string.')
-            }
-
-            this.unit = newUnit
-            this.markModified('unit');
-            return this.save();
-        } catch (err) {
-            throw new Error(err);
-        }
-    },
-
-    /**
-     * Change the ingredients name
+     * Change the size name
      * 
      * @param {String} newName
      */
-    changeName: async function(newName) {
+        changeName: async function(newName) {
         try {
             if(typeof newName != "string") {
                 throw new Error('The name provided is not a string.')
@@ -55,7 +29,7 @@ IngredientSchema.methods = {
 
             let obj = await this.find({"name" : newName});
             if(obj != null) {
-                throw new Error('The name already exists');
+                throw new Error('The size already exists');
             }
 
             this.name = newName
@@ -65,25 +39,28 @@ IngredientSchema.methods = {
             throw new Error(err);
         }
     }
-    
 }
 
 /**
  * Statics
  */
-IngredientSchema.statics = {
+SizeSchema.statics = {
     /**
-     * Find ingredient by name
+     * Find beverage by name
      * 
      * @param {String} name
      */
     load: function(name) {
-        return this.findOne({name})
-        .exec();
+        try {
+            return this.findOne({name})
+            .exec();
+        } catch(err) {
+            throw new Error(err);
+        }
     },
 
     /**
-     * List ingredients
+     * List beverages
      * 
      * @param {Object} options
      */
@@ -100,10 +77,10 @@ IngredientSchema.statics = {
             .lean(isLean)
             .exec();
         } catch(err) {
-            console.log(err);
-            return 'error ocurred';
+            throw new Error(err);
         }
     }
 }
 
-module.exports = mongoose.model('Ingredient', IngredientSchema)
+const Size = mongoose.model('Size', SizeSchema);
+module.exports = Size;
