@@ -80,7 +80,7 @@ BeverageSchema.methods = {
      */
     updateSettings: async function(settings) {
         try {
-            if(typeof this.settings !== 'object') {
+            if(typeof settings !== 'object') {
                 throw new Error('The settings provided is not an object.')
             }
 
@@ -143,13 +143,15 @@ BeverageSchema.statics = {
         const   criteria    = (options.hasOwnProperty('criteria')? options.criteria : {}),
                 limit       = (options.hasOwnProperty('limit')? options.limit : 30),
                 page        = (options.hasOwnProperty('page')? options.page : 0),
-                isLean      = (options.hasOwnProperty('lean')? options.lean : FALSE);
+                isLean      = (options.hasOwnProperty('lean')? options.lean : false);
         try {
             return this.find(criteria)
             .sort({name: 1})
             .limit(limit)
             .skip(limit * page)
             .lean(isLean)
+            .populate('beverageType')
+            .populate('recipe.ingredients.ingredient')
             .exec();
         } catch(err) {
             throw new Error(err);

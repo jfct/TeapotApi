@@ -68,7 +68,7 @@ SizeSchema.statics = {
         const   criteria    = (options.hasOwnProperty('criteria')? options.criteria : {}),
                 limit       = (options.hasOwnProperty('limit')? options.limit : 30),
                 page        = (options.hasOwnProperty('page')? options.page : 0),
-                isLean      = (options.hasOwnProperty('lean')? options.lean : FALSE);
+                isLean      = (options.hasOwnProperty('lean')? options.lean : false);
         try {
             return this.find(criteria)
             .sort({name: 1})

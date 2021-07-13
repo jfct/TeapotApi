@@ -29,24 +29,26 @@ async function run() {
 		// Connect to the database
 		mongoose.connect(uri, mongooseOptions);
 
-		let beverage	= await Beverage.load('Green Tea');
-		let water 		= await Ingredient.load('Water');
-		let bevType		= await BeverageType.load('Tea');
-		let stock 		= await Stock.load();
 
-		if(stock == null) {
-			stock = new Stock({
-				ingredients: []
-			});
-		}
+
+		// let beverage	= await Beverage.load('Green Tea');
+		// let water 		= await Ingredient.load('Water');
+		// let bevType		= await BeverageType.load('Tea');
+		//  let stock 		= await Stock.load();
+
+		// if(stock == null) {
+		// 	stock = new Stock({
+		// 		ingredients: []
+		// 	});
+		// }
 		
-		console.log('bT', bevType);
-		console.log(await bevType.changeName('Cold Tea'));
+		// console.log('bT', bevType);
+		// console.log(await bevType.changeName('Cold Tea'));
 
 
 		// console.log(beverage);
-		// await stock.addIngredient('Water', 250);
-		// await stock.addIngredient('Green Tea Leaf', 25);
+		//  await stock.addIngredient('Water', 250);
+		//  await stock.addIngredient('Green Tea Leaf', 25);
 		// stock.addIngredient('Green Tea sdfasdLeaf', 25);
 		// await stock.removeIngredient('Green Tea Leaf');
 		// stock.removeQuantity('Water', 700);

@@ -23,6 +23,31 @@ const StockSchema = new Schema({
  * Methods
  */
 StockSchema.methods = {
+
+    /**
+     * Return the ingredient info from the stock
+     * 
+     * @param {String} ingredient 
+     */
+    getIngredient: async function(ingredient) {
+        try {
+            // Get the ingredient Id because we can only populate after the search
+            let ingredientObj = await Ingredient.load(ingredient);
+
+            if(ingredientObj == null) {
+                throw new Error("The ingredient doesn't exist in the current stock.")
+            }
+
+            return await Stock
+                .findOne({"ingredients.ingredient": ingredientObj._id})
+                .select({"ingredients.ingredient.$": 1})
+                .lean(true)
+                .populate('ingredients.ingredient')
+        } catch (err) {
+            throw new Error(err);
+        }
+    },
+
     /**
      * Adds quantity to an ingredient in the stock
      * 
@@ -40,7 +65,7 @@ StockSchema.methods = {
                 // If it exists, then add to the current stockpile
                 for (let idx in this.ingredients) {
                     if(this.ingredients[idx].ingredient.name == ingredientObj.name) {
-                        this.ingredients[idx].quantity += value;
+                        this.ingredients[idx].quantity += +value;
                     }
                 }
             }
@@ -76,7 +101,7 @@ StockSchema.methods = {
                         if (this.ingredients[idx].quantity - value < 0) {
                             throw new Error('The quantity you want to remove is higher than the current stock.');
                         }
-                        this.ingredients[idx].quantity -= value;
+                        this.ingredients[idx].quantity -= +value;
                     }
                 }
             }
@@ -105,7 +130,7 @@ StockSchema.methods = {
             } else {
                 // Check if it exists in stock
                 // We have to use the ID, because it only loads the remaining objects after the populate
-                let obj     = await Stock.find({"ingredients.ingredient" : ingredientObj._id}).populate('ingredients.ingredient');
+                let obj = await Stock.find({"ingredients.ingredient" : ingredientObj._id}).populate('ingredients.ingredient');
                 
                 // If it's not in the stock, add
                 if(Object.keys(obj).length < 1) {
@@ -173,10 +198,11 @@ StockSchema.statics = {
      * @param {Object} options
      */
     list: function(options) {
-        const   isLean      = (options.hasOwnProperty('lean')? options.lean : FALSE);
+        const isLean = (options.hasOwnProperty('lean')? options.lean : false);
         try {
             return this.find()
             .lean(isLean)
+            .populate('ingredients.ingredient')
             .exec();
         } catch(err) {
             throw new Error(err);
