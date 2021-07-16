@@ -14,13 +14,20 @@ const Stock         = require('../model/stock');
         let ingredient = Ingredient.find({name: ingredientName});
 
         if(ingredient == null) {
-            res.status(200).send("Ingredient doesn't exist.");
+            res.status(200).send({
+                success : true,
+                result  : "Ingredient doesn't exist."
+            });
         }
         
         await Stock.addIngredient(ingredientName, value);
         res.status(200).send('Ingredient ' + ingredientName + '('+value+') added.');
     } catch(err) {
-        res.status(400).send(err.message);
+        console.log(err);
+        res.status(400).send({
+            success : false,
+            message : err.message
+        });
     }
 }
 
@@ -32,16 +39,26 @@ exports.get = async (req, res, next) => {
     try {
         let ingredientName  = req.params.ingredient;
             stock           = await Stock.load();
-            response        = await stock.getIngredient(ingredientName);
+            result          = await stock.getIngredient(ingredientName);
 
-        if(response == null) {
-            res.status(200).send('No ingredient (' + ingredientName + ') in stock.');
+        if(result == null) {
+            res.status(200).send({
+                success: true,
+                response: 'No ingredient (' + ingredientName + ') in stock.'
+            });
         } else {
-            res.status(200).send(response);
+            res.status(200).send({
+                success : true,
+                response: result
+            });
         }
     
     } catch(err) {
-        res.status(400).send(err.message);
+        console.log(err)
+        res.status(400).send({
+            success : false,
+            response: err.message
+        });
     }
 }
 /**
@@ -50,10 +67,17 @@ exports.get = async (req, res, next) => {
 exports.getList = (req, res, next) => {
     try {
         Stock.list({}).then(function (list) {
-            res.status(200).send(list);
+            res.status(200).send({
+                success : true,
+                response: list
+            });
         });
     } catch(err) {
-        res.status(400).send(err.message);
+        console.log(err);
+        res.status(400).send({
+            success : false,
+            response: err.message
+        });
     }
 }
 
@@ -67,10 +91,18 @@ exports.add = async (req, res, next) => {
             value           = req.params.quantity,
             stock           = await Stock.load();
     
-        let response = await stock.addQuantity(ingredientName, value)
-        res.status(200).send('Added ' + value + ' of ' + ingredientName + ' to stock.')
+        await stock.addQuantity(ingredientName, value)
+
+        res.status(200).send({
+            success : true,
+            response: 'Added ' + value + ' of ' + ingredientName + ' to stock.'
+        })
     } catch (err) {
-        res.status(400).send(err.message);
+        console.log(err);
+        res.status(400).send({
+            success: false,
+            message: err.message
+        });
     }
 }
 /**
@@ -82,10 +114,18 @@ exports.add = async (req, res, next) => {
             value           = req.params.quantity,
             stock           = await Stock.load();
     
-        let response = await stock.removeQuantity(ingredientName, value)
-        res.status(200).send('Removed ' + value + ' of ' + ingredientName + ' to stock.')
+        await stock.removeQuantity(ingredientName, value)
+
+        res.status(200).send({
+            success : true,
+            response: 'Removed ' + value + ' of ' + ingredientName + ' to stock.'
+        })
     } catch (err) {
-        res.status(400).send(err.message);
+        console.log(err);
+        res.status(400).send({
+            success : false,
+            response: err.message
+        });
     }
 }
 
@@ -98,9 +138,17 @@ exports.delete = async (req, res, next) => {
         let ingredient  = req.params.ingredient,
             stock       = await Stock.load();
         
-        let response = await stock.removeIngredient(ingredient);
-        res.status(200).send(req.params.ingredient + ' deleted.');
+        await stock.removeIngredient(ingredient);
+
+        res.status(200).send({
+            success : true,
+            response: req.params.ingredient + ' deleted.'
+        });
     } catch(err) {
-        res.status(400).send(err.message);
+        console.log(err);
+        res.status(400).send({
+            success : false,
+            response: err.message
+        });
     }
 };

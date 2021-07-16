@@ -6,12 +6,12 @@ const Schema    = mongoose.Schema;
  */
 const OrderSchema = new Schema({
     user: {
-        type: String,
+        type    : String,
         required: true
     },
     beverage: {
-        type: mongoose.ObjectId,
-        ref: 'beverage',
+        type    : mongoose.ObjectId,
+        ref     : 'Beverage',
         required: true
     },
     extraIngredients: [{
@@ -26,8 +26,8 @@ const OrderSchema = new Schema({
         }
     }],
     size: {
-        type: sizeSchema,
-        ref: 'size',
+        type: mongoose.ObjectId,
+        ref: 'Size',
         required: true
     },
     created: {
@@ -35,13 +35,17 @@ const OrderSchema = new Schema({
         default: Date.now
     },
     status: {
+        active: {
+            type: Boolean,
+            default: true
+        },
         completed: {
             type: Boolean,
-            default: FALSE
+            default: false
         },
         completedAt: {
             type: Date,
-            default: FALSE
+            default: null
         }
     },
 } , {collection: 'orders'});
@@ -53,14 +57,32 @@ OrderSchema.methods = {
     /**
      * Closes the order, changes the status and adds the completion date
      */
-    closeOrder: function() {
+    complete: async function() {
         try {
-            this.status.completed   = TRUE;
+            this.status.completed   = true;
+            this.status.active      = false;
             this.status.completedAt = new Date();
             this.markModified('status');
-            this.save();
+            return this.save();
         } catch (err) {
-            throw new Error(err);
+            throw err;
+        }
+    },
+
+
+    /**
+     * Cancels a specific order
+     * 
+     * @param {String} id 
+     */
+    cancel: function(id) {
+        try {
+            this.status.completed   = true;
+            this.status.completedAt = new Date();
+            this.markModified('status');
+            return this.save();
+        } catch (err) {
+            throw err;
         }
     }
 }
@@ -72,17 +94,17 @@ OrderSchema.statics = {
     /**
      * Load order by id
      * 
-     * @param {String} name
+     * @param {String} _id
      */
-    load: function(name) {
+    load: function(_id) {
         try {
-            return this.findOne({name})
+            return Order.findOne({_id})
             .populate('extraIngredients.ingredient')
             .populate('size')
             .populate('beverage')
             .exec();
         } catch(err) {
-            throw new Error(err);
+            throw err;
         }
     },
 
@@ -97,20 +119,67 @@ OrderSchema.statics = {
                 page        = (options.hasOwnProperty('page')? options.page : 0),
                 isLean      = (options.hasOwnProperty('lean')? options.lean : false);
         try {
-            return this.find(criteria)
+            return Order.find(criteria)
             .sort({name: 1})
             .limit(limit)
             .skip(limit * page)
             .lean(isLean)
             .populate('extraIngredients.ingredient')
             .populate('size')
-            .populate('beverage')
+            .populate({
+                path        : 'beverage',
+                populate    : {
+                    path    : 'beverageType',
+                },
+                populate    : {
+                    path    : 'recipe.ingredients.ingredient',
+                }
+            })
             .exec();
         } catch(err) {
-            throw new Error(err);
+            throw err;
         }
-    }
+    },
+
+    /**
+     * List orders
+     * 
+     * @param {Object} options
+     */
+     simplifiedList: function(options) {
+        const   criteria    = (options.hasOwnProperty('criteria')? options.criteria : {}),
+                limit       = (options.hasOwnProperty('limit')? options.limit : 30),
+                page        = (options.hasOwnProperty('page')? options.page : 0),
+                isLean      = (options.hasOwnProperty('lean')? options.lean : false);
+        try {
+            return Order.find(criteria)
+            .sort({created: 1})
+            .limit(limit)
+            .skip(limit * page)
+            .lean(isLean)
+            .populate('extraIngredients.ingredient', 'name unit')
+            .populate('size', 'name multiplier')
+            .populate({
+                path    : 'beverage',
+                select  : 'name',
+                populate : {
+                    path    : 'beverageType',
+                    select  : 'name'
+                },
+                populate : {
+                    path    : 'recipe.ingredients.ingredient',
+                    select  : 'name quantity'
+                },
+            })
+            .select('_id user created extraIngredients.quantity beverage')
+            .exec();
+        } catch(err) {
+            throw err;
+        }
+    },
+
+
 }
 
-const Order = mongoose.model('Order', OrderSchema);
-module.exports = Order;
+const Order     = mongoose.model('Order', OrderSchema);
+module.exports  = Order;

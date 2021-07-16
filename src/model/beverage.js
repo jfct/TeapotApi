@@ -6,10 +6,13 @@ const Schema    = mongoose.Schema;
  */
 const BeverageSchema = new Schema({
     name: {
-        type    : String,
-        required: true,
-        unique  : true
+        type        : String,
+        required    : true,
+        lowercase   : true,
+        trim        : true,
+        unique      : true
     },
+    description: String,
     beverageType: {
         type    : mongoose.Schema.Types.ObjectId,
         ref     : 'BeverageType',
@@ -37,6 +40,25 @@ const BeverageSchema = new Schema({
  */
 BeverageSchema.methods = {
     /**
+     * Return the list of ingredients in a simple key->value manner
+     */
+    getIngredientList: async function() {
+        try {
+            let ingredientList = {};
+
+            for(let idx in this.recipe.ingredients) {
+                let ingredient  = this.recipe.ingredients[idx].ingredient.name,
+                    quantity    = this.recipe.ingredients[idx].quantity;
+
+                ingredientList[ingredient] = quantity;
+            }
+            return ingredientList;
+        } catch (err) {
+            throw err;
+        }
+    },
+
+    /**
      * Update recipe 
      * 
      * @param {Object} newRecipe
@@ -46,7 +68,7 @@ BeverageSchema.methods = {
             this.recipe.ingredients  = newRecipe;
             return this.save();
         } catch(err) {
-            throw new Error(err);
+            throw err;
         }
     },
 
@@ -69,7 +91,7 @@ BeverageSchema.methods = {
             }
             return this.save();
         } catch(err) {
-            throw new Error(err);
+            throw err;
         }
     },
 
@@ -87,7 +109,7 @@ BeverageSchema.methods = {
             this.settings = settings;
             return this.save();
         } catch(err) {
-            throw new Error(err);
+            throw err;
         }
     },
 
@@ -109,7 +131,7 @@ BeverageSchema.methods = {
             this.markModified('settings');
             return this.save();
         } catch(err) {
-            throw new Error(err);
+            throw err;
         }
     }
 }
@@ -125,12 +147,16 @@ BeverageSchema.statics = {
      */
     load: function(name) {
         try {
-            return this.findOne({name})
+            if(typeof name !== "string") {
+                throw new Error('Invalid name given');
+            }
+
+            return Beverage.findOne({'name': name.toLowerCase()})
             .populate('beverageType')
             .populate('recipe.ingredients.ingredient')
             .exec();
         } catch(err) {
-            throw new Error(err);
+            throw err;
         }
     },
 
@@ -145,7 +171,7 @@ BeverageSchema.statics = {
                 page        = (options.hasOwnProperty('page')? options.page : 0),
                 isLean      = (options.hasOwnProperty('lean')? options.lean : false);
         try {
-            return this.find(criteria)
+            return Beverage.find(criteria)
             .sort({name: 1})
             .limit(limit)
             .skip(limit * page)
@@ -154,7 +180,7 @@ BeverageSchema.statics = {
             .populate('recipe.ingredients.ingredient')
             .exec();
         } catch(err) {
-            throw new Error(err);
+            throw err;
         }
     }
 }

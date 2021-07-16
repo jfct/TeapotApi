@@ -17,12 +17,22 @@ const Ingredient    = require('../model/ingredient');
         });
 
         newIngredient.save().then(() => {
-            res.status(200).send('New Ingredient (' + ingredientName + ') created.')
+            res.status(200).send({
+                success : true,
+                response: 'New Ingredient (' + ingredientName + ') created.'
+            })
         }).catch((err) => {
-            res.status(400).send(err.message);
+            res.status(400).send({
+                success : false,
+                response: err.message
+            });
         });        
     } catch(err) {
-        res.status(400).send(err.message);
+        console.log(err);
+        res.status(400).send({
+            success : false,
+            response: err.message
+        });
     }
 }
 
@@ -33,10 +43,17 @@ const Ingredient    = require('../model/ingredient');
 exports.get = (req, res, next) => {
     try {
         Ingredient.findOne({'name' : req.params.ingredient}).then(function (ingredient) {
-            res.status(200).send(ingredient);
+            res.status(200).send({
+                success : true,
+                response: ingredient
+            });
         });
     } catch(err) {
-        res.status(400).send(err.message);
+        console.log(err);
+        res.status(400).send({
+            success : true,
+            response: err.message
+        });
     }
 }
 /**
@@ -45,13 +62,43 @@ exports.get = (req, res, next) => {
 exports.getList = (req, res, next) => {
     try {
         Ingredient.list({}).then(function (list) {
-            res.status(200).send(list);
+            res.status(200).send({
+                success : true,
+                response: list
+            });
         });
     } catch(err) {
-        res.status(400).send(err.message);
+        console.log(err);
+        res.status(400).send({
+            success : false,
+            response: err.message
+        });
     }
 }
 
+
+/**
+ * Update ingredient unit
+ */
+exports.updateUnit = (req, res, next) => {
+    try {
+        let ingredientName  = req.params.ingredient,
+            newUnit         = req.body.unit,
+            ingredientObj   = Ingredient.load(ingredientName);
+
+        await ingredientObj.changeUnit(newUnit);
+        res.status(200).send({
+            success : true,
+            response: 'Unit changed!'
+        });
+    } catch(err) {
+        console.log(err);
+        res.status(400).send({
+            success : true,
+            response: err.message
+        });
+    }
+}
 
 
 /**
@@ -59,10 +106,17 @@ exports.getList = (req, res, next) => {
  */
 exports.delete = (req, res, next) => {
     try {
-        Ingredient.deleteOne({name: req.params.ingredient}).then(function (response) {
-            res.status(200).send(response.deletedCount + ' deleted.');
+        Ingredient.deleteOne({name: req.params.ingredient}).then(function (result) {
+            res.status(200).send({
+                success : true,
+                response: result.deletedCount + ' deleted.'
+            });
         })
     } catch(err) {
-        res.status(400).send(err.message);
+        console.log(err);
+        res.status(400).send({
+            success : false,
+            response: err.message
+        });
     }
 };

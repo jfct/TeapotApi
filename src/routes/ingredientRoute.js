@@ -5,9 +5,7 @@ const controller    = require('../controllers/ingredientController')
 router.put('/:ingredient', controller.put);
 router.get('/', controller.getList);
 router.get('/:ingredient', controller.get);
-
-//router.post('/:ingredient', controller.update);
-
+router.post('/:ingredient/unit', controller.updateUnit);
 router.delete('/:ingredient', controller.delete);
 
 module.exports = router;

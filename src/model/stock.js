@@ -23,7 +23,25 @@ const StockSchema = new Schema({
  * Methods
  */
 StockSchema.methods = {
+    /**
+     * Return the list of ingredients in a simple key->value manner
+     */
+    getIngredientList: async function() {
+        try {
+            let ingredientList = {};
 
+            for(let idx in this.ingredients) {
+                let ingredient  = this.ingredients[idx].ingredient.name,
+                    quantity    = this.ingredients[idx].quantity;
+
+                ingredientList[ingredient] = quantity;
+            }
+            return ingredientList;
+        } catch (err) {
+            throw err;
+        }
+    },
+    
     /**
      * Return the ingredient info from the stock
      * 
@@ -32,7 +50,7 @@ StockSchema.methods = {
     getIngredient: async function(ingredient) {
         try {
             // Get the ingredient Id because we can only populate after the search
-            let ingredientObj = await Ingredient.load(ingredient);
+            let ingredientObj = await Ingredient.load(ingredient.toLowerCase());
 
             if(ingredientObj == null) {
                 throw new Error("The ingredient doesn't exist in the current stock.")
@@ -44,7 +62,7 @@ StockSchema.methods = {
                 .lean(true)
                 .populate('ingredients.ingredient')
         } catch (err) {
-            throw new Error(err);
+            throw err;
         }
     },
 
@@ -56,7 +74,7 @@ StockSchema.methods = {
      */
     addQuantity: async function(ingredient, value) {
         try {
-            let ingredientObj = await Ingredient.load(ingredient);
+            let ingredientObj = await Ingredient.load(ingredient.toLowerCase());
     
             // If it doesnt exist
             if (ingredientObj == null) {
@@ -73,7 +91,7 @@ StockSchema.methods = {
             this.markModified('ingredients');
             return this.save();
         } catch (err) {
-            throw new Error(err);
+            throw err;
         }
     },
 
@@ -89,7 +107,7 @@ StockSchema.methods = {
                 throw new Error('The value is not valid.');
             }
 
-            let ingredientObj = await Ingredient.load(ingredient);
+            let ingredientObj = await Ingredient.load(ingredient.toLowerCase());
 
             // If it doesnt exist
             if (ingredientObj == null) {
@@ -109,7 +127,7 @@ StockSchema.methods = {
             this.markModified('ingredients');
             return this.save();
         } catch (err) {
-            throw new Error(err);
+            throw err;
         }
     },
 
@@ -117,12 +135,12 @@ StockSchema.methods = {
      * Add a new ingredient to the stock
      * 
      * TODO: Add response
-     * 
+     * @param {String} ingredient  
      * @param {Number} value 
      */
     addIngredient: async function(ingredient, value) {
         try {
-            let ingredientObj = await Ingredient.load(ingredient);
+            let ingredientObj = await Ingredient.load(ingredient.toLowerCase());
 
             // If it doesnt exist
             if (ingredientObj == null) {
@@ -144,7 +162,7 @@ StockSchema.methods = {
                 }
             }
         } catch(err) {
-            throw new Error(err);
+            throw err;
         }
     },
     
@@ -152,22 +170,23 @@ StockSchema.methods = {
      * Completly remove the ingredient from the stock
      * 
      * TODO: Add response
-     * @param {Number} value 
+     * @param {String} ingredient 
      */
     removeIngredient: async function(ingredient) {
         try {
-            let ingredientObj = await Ingredient.load(ingredient);
+            let ingredientObj = await Ingredient.load(ingredient.toLowerCase());
 
             // If there are no ingredients of this type in stock already
             if(ingredientObj == null) {
                 return 1;
             } else {
                 // If the ingredient is part of the stock, then remove it
-                let res = await Stock.updateOne({'ingredients.ingredient': ingredientObj._id}, { "$pull": { "ingredients": { "ingredient": ingredientObj._id } }}, { safe: true, multi:true });
+                await Stock.updateOne({'ingredients.ingredient': ingredientObj._id}, { "$pull": { "ingredients": { "ingredient": ingredientObj._id } }}, { safe: true, multi:true });
+                
                 return this.save();
             }
         } catch(err) {
-            throw new Error(err);
+            throw err;
         }
     }
 
@@ -184,11 +203,11 @@ StockSchema.statics = {
      */
     load: function() {
         try {
-            return this.findOne()
+            return Stock.findOne()
             .populate('ingredients.ingredient')
             .exec();
         } catch(err) {
-            throw new Error(err);
+            throw err;
         }
     },
 
@@ -200,12 +219,12 @@ StockSchema.statics = {
     list: function(options) {
         const isLean = (options.hasOwnProperty('lean')? options.lean : false);
         try {
-            return this.find()
+            return Stock.find()
             .lean(isLean)
             .populate('ingredients.ingredient')
             .exec();
         } catch(err) {
-            throw new Error(err);
+            throw err;
         }
     }
 }

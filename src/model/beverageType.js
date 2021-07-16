@@ -6,9 +6,17 @@ const Schema    = mongoose.Schema;
  */
  const BeverageTypeSchema = new Schema({
     name: {
-        type    : String,
+        type        : String,
+        lowercase   : true,
+        trim        : true,
+        required    : true,
+        unique      : true
+    },
+    description: String,
+    allowedToBrew: {
+        type: Boolean,
         required: true,
-        unique  : true
+        default: false
     }
 }, {collection: 'beverageTypes'})
 
@@ -29,12 +37,50 @@ BeverageTypeSchema.methods = {
             }
 
             this.name = newName
-            this.markModified('unit');
+            this.markModified('name');
             return this.save();
         } catch (err) {
-            throw new Error(err);
+            throw err;
         }
-    }
+    },
+
+    /**
+     * Change the bevera type name
+     * 
+     * @param {String} description 
+     */
+    changeDescription: function(description) {
+        try {
+            if(typeof description != "string") {
+                throw new Error('The parameter provided is not a string.')
+            }
+
+            this.description = description;
+            this.markModified('description');
+            return this.save();
+        } catch (err) {
+            throw err;
+        }
+    },
+
+    /**
+     * Change the allowed to brew
+     * 
+     * @param {Boolean} allowed 
+     */
+    setAllowedToBrew: function(allowed) {
+        try {
+            if(typeof allowed != "boolean") {
+                throw new Error('The parameter provided is not a boolean.')
+            }
+
+            this.allowedToBrew = allowed;
+            this.markModified('allowedToBrea');
+            return this.save();
+        } catch (err) {
+            throw err;
+        }
+    },
 }
 
 /**
@@ -48,10 +94,13 @@ BeverageTypeSchema.statics = {
      */
     load: function(name) {
         try {
-            return this.findOne({name})
-            .exec();
+            if(typeof name !== "string") {
+                throw new Error('Invalid name given');
+            }
+
+            return BeverageType.findOne({'name': name.toLowerCase()}).exec();
         } catch(err) {
-            throw new Error(err);
+            throw err;
         }
     },
 
@@ -66,16 +115,17 @@ BeverageTypeSchema.statics = {
                 page        = (options.hasOwnProperty('page')? options.page : 0),
                 isLean      = (options.hasOwnProperty('lean')? options.lean : false);
         try {
-            return this.find(criteria)
+            return BeverageType.find(criteria)
             .sort({name: 1})
             .limit(limit)
             .skip(limit * page)
             .lean(isLean)
             .exec();
         } catch(err) {
-            return 'error ocurred';
+            throw err;
         }
     }
 }
 
-module.exports = mongoose.model('BeverageType', BeverageTypeSchema);
+const BeverageType  = mongoose.model('BeverageType', BeverageTypeSchema);
+module.exports      = BeverageType;

@@ -1,14 +1,25 @@
 const mongoose  = require('mongoose')
 const Schema    = mongoose.Schema;
+const helper    = ('../helper');
 
 /**
  * Size schema
  */
 const SizeSchema = new Schema({
     name: {
-        type    : String,
+        type        : String,
+        required    : true,
+        unique      : true,
+        lowercase   : true,
+        trim        : true,
+    },
+    multiplier: {
+        type    : Number,
         required: true,
-        unique  : true
+        // Integer only
+        get: v => Math.round(v),
+        set: v => Math.round(v),
+        min: 1
     }
 }, {collection: 'sizes'});
 
@@ -21,7 +32,7 @@ SizeSchema.methods = {
      * 
      * @param {String} newName
      */
-        changeName: async function(newName) {
+    changeName: async function(newName) {
         try {
             if(typeof newName != "string") {
                 throw new Error('The name provided is not a string.')
@@ -36,9 +47,30 @@ SizeSchema.methods = {
             this.markModified('name');
             return this.save();
         } catch (err) {
-            throw new Error(err);
+            throw err;
+        }
+    },
+
+    /**
+     * Change the multiplier of the drink
+     * 
+     * @param {Number} multiplier
+     */
+     changeMultiplier: async function(multiplier) {
+        try {
+            if(helper.isNumeric(multiplier)) {
+                throw new Error('The multiplier provided is not a number.')
+            }
+
+            this.multiplier = multiplier
+            this.markModified('multiplier');
+            return this.save();
+        } catch (err) {
+            throw err;
         }
     }
+
+
 }
 
 /**
@@ -52,10 +84,13 @@ SizeSchema.statics = {
      */
     load: function(name) {
         try {
-            return this.findOne({name})
-            .exec();
+            if(typeof name !== "string") {
+                throw new Error('Invalid name given');
+            }
+
+            return Size.findOne({'name': name}).exec();
         } catch(err) {
-            throw new Error(err);
+            throw err;
         }
     },
 
@@ -70,14 +105,14 @@ SizeSchema.statics = {
                 page        = (options.hasOwnProperty('page')? options.page : 0),
                 isLean      = (options.hasOwnProperty('lean')? options.lean : false);
         try {
-            return this.find(criteria)
+            return Size.find(criteria)
             .sort({name: 1})
             .limit(limit)
             .skip(limit * page)
             .lean(isLean)
             .exec();
         } catch(err) {
-            throw new Error(err);
+            throw err;
         }
     }
 }

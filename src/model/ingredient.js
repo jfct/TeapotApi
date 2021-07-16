@@ -7,10 +7,13 @@ const helper    = require('../helper');
  */
 const IngredientSchema = new Schema({
     name: {
-        type    : String,
-        required: true,
-        unique  : true
+        type        : String,
+        required    : true,
+        lowercase   : true,
+        trim        : true,
+        unique      : true
     },
+    description: String,
     // Measurement
     unit: {
         type    : String,
@@ -78,8 +81,17 @@ IngredientSchema.statics = {
      * @param {String} name
      */
     load: function(name) {
-        return this.findOne({name})
-        .exec();
+        try {
+            if(typeof name !== "string") {
+                console.log(new Error().stack)
+                throw new Error('Invalid name given');
+            }
+            
+            return Ingredient.findOne({'name': name.toLowerCase()}).exec();
+        } catch (err) {
+            console.log(err);
+            throw err;
+        }
     },
 
     /**
@@ -93,7 +105,7 @@ IngredientSchema.statics = {
                 page        = (options.hasOwnProperty('page')? options.page : 0),
                 isLean      = (options.hasOwnProperty('lean')? options.lean : false);
         try {
-            return this.find(criteria)
+            return Ingredient.find(criteria)
             .sort({name: 1})
             .limit(limit)
             .skip(limit * page)
@@ -101,9 +113,10 @@ IngredientSchema.statics = {
             .exec();
         } catch(err) {
             console.log(err);
-            return 'error ocurred';
+            throw err;
         }
     }
 }
 
-module.exports = mongoose.model('Ingredient', IngredientSchema)
+const Ingredient    = mongoose.model('Ingredient', IngredientSchema);
+module.exports      = Ingredient;

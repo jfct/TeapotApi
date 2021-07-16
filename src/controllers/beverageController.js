@@ -20,7 +20,7 @@ const Ingredient    = require('../model/ingredient');
         // Fill the recipe with the ingredients 
         for(idx in reqRecipe) {
             if(!reqRecipe[idx].hasOwnProperty('name') || !reqRecipe[idx].hasOwnProperty('quantity')) {
-                throw Error('Invalid recipe format.');
+                throw new Error('Invalid recipe format.');
             }
 
             let ingredientName  = reqRecipe[idx].name,
@@ -32,7 +32,7 @@ const Ingredient    = require('../model/ingredient');
                     quantity    : reqRecipe[idx].quantity
                 });
             } else {
-                throw Error("This ingredient (" + reqRecipe[idx].name + ") doesn't exist.");
+                throw new Error("This ingredient (" + reqRecipe[idx].name + ") doesn't exist.");
             }
         }
 
@@ -44,10 +44,17 @@ const Ingredient    = require('../model/ingredient');
         });
 
         newBeverage.save(function(err) {
-            res.status(200).send('New beverage ('+recipeName+') created.')
+            res.status(200).send({
+                success : true,
+                response: 'New beverage ('+recipeName+') created.'
+            })
         });
     } catch(err) {
-        res.status(400).send(err.message);
+        console.log(err);
+        res.status(400).send({
+            success : false,
+            response: err.message
+        });
     }
 }
 
@@ -58,10 +65,17 @@ const Ingredient    = require('../model/ingredient');
 exports.get = (req, res, next) => {
     try {
         Beverage.findOne({'name' : req.params.beverage}).then(function (beverage) {
-            res.status(200).send(beverage);
+            res.status(200).send({
+                success : true,
+                response: beverage
+            });
         });
     } catch(err) {
-        res.status(400).send(err.message);
+        console.log(err);
+        res.status(400).send({
+            success : false,
+            response: err.message
+        });
     }
 }
 /**
@@ -70,10 +84,17 @@ exports.get = (req, res, next) => {
 exports.getList = (req, res, next) => {
     try {
         Beverage.list({}).then(function (list) {
-            res.status(200).send(list);
+            res.status(200).send({
+                success : true,
+                response: list
+            });
         });
     } catch(err) {
-        res.status(400).send(err.message);
+        console.log(err);
+        res.status(400).send({
+            success : false,
+            response: err.message
+        });
     }
 }
 /**
@@ -82,11 +103,17 @@ exports.getList = (req, res, next) => {
 exports.getRecipe = (req, res, next) => {
     try {
         Beverage.load(req.params.beverage).then(function (beverage) {
-            console.log(beverage.recipe);
-            res.status(200).send(beverage.recipe);
+            res.status(200).send({
+                success : true,
+                response: beverage.recipe
+            });
         });
     } catch(err) {
-        res.status(400).send(err.message);
+        console.log(err);
+        res.status(400).send({
+            success : false,
+            response: err.message
+        });
     }
 }
 
@@ -102,15 +129,28 @@ exports.postChangeSettings = async(req,res,next) => {
             let beverage = await Beverage.load(req.params.beverage);
             if (beverage != null) {
                 await beverage.updateSettings(body.settings);
-                res.status(200).send('Settings updated for "' + beverage.name + '"');
+                res.status(200).send({
+                    success : true,
+                    response: 'Settings updated for "' + beverage.name + '"'
+                });
             } else {
-                res.status(200).send('That beverage was not found.')
+                res.status(200).send({
+                    success : true,
+                    response: 'That beverage was not found.'
+                })
             }
         } else {
-            res.status(400).send('The body received is invalid.')
+            res.status(400).send({
+                success : false,
+                response: 'The body received is invalid.'
+            })
         }
     } catch(err) {
-        res.status(400).send(err.message)
+        console.log(err);
+        res.status(400).send({
+            success : false,
+            response: err.message
+        })
     }
 }
 /**
@@ -126,15 +166,28 @@ exports.postChangeSettingComponent = async (req,res,next) => {
             let beverage = await Beverage.load(req.params.beverage);
             if (beverage != null) {
                 await beverage.updateSettingsComponent(setting, value);
-                res.status(200).send('Settings updated for "' + beverage.name + '" setting "' + setting + '".');
+                res.status(200).send({
+                    success : true,
+                    response: 'Settings updated for "' + beverage.name + '" setting "' + setting + '".'
+                });
             } else {
-                res.status(200).send('That beverage was not found.')
+                res.status(200).send({
+                    success : true,
+                    response: 'That beverage was not found.'
+                })
             }
         } else {
-            res.status(400).send('The body received is invalid.')
+            res.status(400).send({
+                success : false,
+                response: 'The body received is invalid.'
+            })
         }
     } catch(err) {
-        res.status(400).send(err.message)
+        console.log(err);
+        res.status(400).send({
+            success : false,
+            response: err.message
+        })
     }
 }
 
@@ -150,15 +203,28 @@ exports.postChangeRecipe = async (req,res,next) => {
             let beverage = await Beverage.load(req.params.beverage);
             if (beverage != null) {
                 await beverage.updateRecipe(body.recipe);
-                res.status(200).send('Recipe updated for "' + beverage.name + '"');
+                res.status(200).send({
+                    success : true,
+                    response: 'Recipe updated for "' + beverage.name + '"'
+                });
             } else {
-                res.status(200).send('That beverage was not found.')
+                res.status(200).send({
+                    success : true,
+                    response: 'That beverage was not found.'
+                })
             }
         } else {
-            res.status(400).send('The body received is invalid.')
+            res.status(400).send({
+                success : false,
+                response: 'The body received is invalid.'
+            })
         }
     } catch(err) {
-        res.status(400).send(err.message)
+        console.log(err);
+        res.status(400).send({
+            success : false,
+            response: err.message
+        })
     }
 }
 
@@ -174,17 +240,30 @@ exports.postChangeRecipeComponent = async (req,res,next) => {
         if (typeof body == 'object' && body.hasOwnProperty('value')) {
             let beverage = await Beverage.load(req.params.beverage);
             if (beverage != null) {
-                let resp = await beverage.updateRecipeComponent(ingredient, value);
-                console.log(resp);
-                res.status(200).send('Recipe updated for "' + beverage.name + '" ingredient "' + ingredient + '".');
+                await beverage.updateRecipeComponent(ingredient, value);
+                
+                res.status(200).send({
+                    success : true,
+                    response: 'Recipe updated for "' + beverage.name + '" ingredient "' + ingredient + '".'
+                });
             } else {
-                res.status(200).send('That beverage was not found.')
+                res.status(200).send({
+                    success : true,
+                    response: 'That beverage was not found.'
+                })
             }
         } else {
-            res.status(400).send('The body received is invalid.')
+            res.status(400).send({
+                success : false,
+                response: 'The body received is invalid.'
+            })
         }
     } catch(err) {
-        res.status(400).send(err.message)
+        console.log(err);
+        res.status(400).send({
+            success : false,
+            response: err.message
+        })
     }
 }
 
@@ -194,11 +273,17 @@ exports.postChangeRecipeComponent = async (req,res,next) => {
  */
 exports.delete = (req, res, next) => {
     try {
-        console.log(req.params.beverage);
-        Beverage.deleteOne({name: req.params.beverage}).then(function (response) {
-            res.status(200).send(response.deletedCount + ' deleted.');
+        Beverage.deleteOne({name: req.params.beverage}).then(function (result) {
+            res.status(200).send({
+                success : true,
+                response: result.deletedCount + ' deleted.'
+            });
         })
     } catch(err) {
-        res.status(400).send(err.message);
+        console.log(err);
+        res.status(400).send({
+            success : false,
+            response: err.message
+        });
     }
 };
