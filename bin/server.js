@@ -1,4 +1,4 @@
-const dotenv 		= require('dotenv');
+const dotenv 		= require('dotenv').config();
 const mongoose		= require('mongoose');
 const app			= require('../src/app');
 const scripts		= require('./scripts')
@@ -11,24 +11,17 @@ async function run() {
 	};
 
 	try {
-		// Define ENV file
-		const result 		= dotenv.config();
-		if (result.error) {
-			throw result.error;
-		}
-		const { parsed: envs } = result;
-
 		// Connect to the database
-		const uri	=  envs.SERVER_IP + ':' + envs.SERVER_PORT + '/' + envs.SERVER_DB_NAME;
+		const uri	=  process.env.DB_URL + ':' + process.env.DB_PORT + '/' + process.env.DB_NAME;
 		mongoose.connect(uri, mongooseOptions);
 
-		if(envs.INITIALIZE_MONGO == 'YES') {
+		if(process.env.INITIALIZE_MONGO == 'YES') {
 			scripts.init();
 		}
 
-		app.listen(envs.PORT, function(err) {
+		app.listen(process.env.PORT, function(err) {
 			if(err) throw err;
-			console.log('Sucessfully listening to port [' + envs.PORT + ']');
+			console.log('Sucessfully listening to port [' + process.env.PORT + ']');
 		});
 	} catch (err) {
 		console.log(err);

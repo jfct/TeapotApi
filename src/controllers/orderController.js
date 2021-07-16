@@ -3,7 +3,6 @@ const Order         = require('../model/order');
 const OrderService  = require('../service/orderService');
 const BeverageService  = require('../service/beverageService');
 const helper        = require('../helper');
-const beverageService = require('../service/beverageService');
 
 /**
  * Place a new order

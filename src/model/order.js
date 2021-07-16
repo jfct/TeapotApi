@@ -73,9 +73,8 @@ OrderSchema.methods = {
     /**
      * Cancels a specific order
      * 
-     * @param {String} id 
      */
-    cancel: function(id) {
+    cancel: function() {
         try {
             this.status.completed   = true;
             this.status.completedAt = new Date();

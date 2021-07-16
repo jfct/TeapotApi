@@ -2,6 +2,7 @@ const Size          = require('../src/model/size');
 const Ingredient    = require('../src/model/ingredient');
 const BeverageType  = require('../src/model/beverageType');
 const Beverage      = require('../src/model/beverage');
+const Stock         = require('../src/model/stock');
 
 module.exports = {
     init: async function() {
@@ -47,6 +48,7 @@ module.exports = {
             // INIT TYPES
             let tea = new BeverageType({
                 name: 'Tea',
+                allowedToBrew: true
             });
             tea.save(function(err) {
                 if (err) throw err;
@@ -63,14 +65,10 @@ module.exports = {
             await stock.addIngredient('Water', 1000);
             await stock.addIngredient('Green Tea Leaf', 25);
     
-            // INIT BEVERAGE
-            let bevType			= await BeverageType.load('tea');
-            let greenTeaLeaves	= await Ingredient.load('green tea leaf');
-            let water 			= await Ingredient.load('water');
-    
+            // INIT BEVERAGE    
             let greenTea 		= new Beverage({
                 name		: 'green_tea',
-                beverageType: bevType._id,
+                beverageType: tea._id,
                 recipe		: {
                     ingredients: [
                         {

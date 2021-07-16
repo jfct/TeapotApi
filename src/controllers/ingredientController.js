@@ -80,7 +80,7 @@ exports.getList = (req, res, next) => {
 /**
  * Update ingredient unit
  */
-exports.updateUnit = (req, res, next) => {
+exports.updateUnit = async (req, res, next) => {
     try {
         let ingredientName  = req.params.ingredient,
             newUnit         = req.body.unit,

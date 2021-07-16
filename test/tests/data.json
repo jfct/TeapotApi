@@ -1,0 +1,131 @@
+{
+    "beverages": [
+        {
+            "_id" : "60f20ab7ea9e18064c95c6fb",
+            "name" : "green_tea",
+            "beverageType" : "60f20ab7ea9e18064c95c6de",
+            "recipe" : {
+                "ingredients" : [ 
+                    {
+                        "_id" : "60f20ab7ea9e18064c95c6fc",
+                        "ingredient" : "60f20ab7ea9e18064c95c6dc",
+                        "quantity" : 100
+                    }, 
+                    {
+                        "_id" : "60f20ab7ea9e18064c95c6fd",
+                        "ingredient" : "60f20ab7ea9e18064c95c6dd",
+                        "quantity" : 1
+                    }
+                ]
+            },
+            "settings" : {
+                "waterTemp" : 80
+            },
+            "__v" : 0
+        }
+    ],
+    "beverageTypes": [
+        {
+            "_id" : "60f20ab7ea9e18064c95c6de",
+            "allowedToBrew" : true,
+            "name" : "tea",
+            "__v" : 0
+        }
+    ],
+    "ingredients": [
+        {
+            "_id" : "60f20ab7ea9e18064c95c6dc",
+            "name" : "water",
+            "description" : "Simple water",
+            "unit" : "ml",
+            "__v" : 0
+        },
+        {
+            "_id" : "60f20ab7ea9e18064c95c6dd",
+            "name" : "green tea leaf",
+            "description" : "The purest of green leafs",
+            "unit" : "unit",
+            "__v" : 0
+        }
+    ],
+    "sizes": [
+        {
+            "_id" : "60f20ab7ea9e18064c95c6d9",
+            "name" : "small",
+            "multiplier" : 1,
+            "__v" : 0
+        },
+        {
+            "_id" : "60f20ab7ea9e18064c95c6da",
+            "name" : "medium",
+            "multiplier" : 2,
+            "__v" : 0
+        },
+        {
+            "_id" : "60f20ab7ea9e18064c95c6db",
+            "name" : "large",
+            "multiplier" : 3,
+            "__v" : 0
+        }
+    ],
+    "stock": [
+        {
+            "_id" : "60f20ab7ea9e18064c95c6f2",
+            "ingredients" : [ 
+                {
+                    "_id" : "60f20ab7ea9e18064c95c6f5",
+                    "ingredient" : "60f20ab7ea9e18064c95c6dc",
+                    "quantity" : 1000
+                }, 
+                {
+                    "_id" : "60f20ab7ea9e18064c95c6f9",
+                    "ingredient" : "60f20ab7ea9e18064c95c6dd",
+                    "quantity" : 25
+                }
+            ],
+            "__v" : 1
+        }
+    ],
+    "orders": [
+        {
+            "_id" : "60f216cd110ded449cb88651",
+            "status" : {
+                "active" : true,
+                "completed" : false,
+                "completedAt" : null
+            },
+            "user" : "test_user_2",
+            "beverage" : "60f20ab7ea9e18064c95c6fb",
+            "extraIngredients" : [ 
+                {
+                    "_id" : "60f216cd110ded449cb88652",
+                    "ingredient" : "60f20ab7ea9e18064c95c6dc",
+                    "quantity" : 5
+                }
+            ],
+            "size" : "60f20ab7ea9e18064c95c6da",
+            "created" : "2021-07-16T23:31:25.536Z",
+            "__v" : 0
+        },
+        {
+            "_id" : "60f216d7110ded449cb8866b",
+            "status" : {
+                "active" : true,
+                "completed" : false,
+                "completedAt" : null
+            },
+            "user" : "test_user_2",
+            "beverage" : "60f20ab7ea9e18064c95c6fb",
+            "extraIngredients" : [ 
+                {
+                    "_id" : "60f216d7110ded449cb8866c",
+                    "ingredient" : "60f20ab7ea9e18064c95c6dc",
+                    "quantity" : 10
+                }
+            ],
+            "size" : "60f20ab7ea9e18064c95c6da",
+            "created" : "2021-07-16T23:31:35.851Z",
+            "__v" : 0
+        }
+    ]
+}

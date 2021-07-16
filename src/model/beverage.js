@@ -152,8 +152,8 @@ BeverageSchema.statics = {
             }
 
             return Beverage.findOne({'name': name.toLowerCase()})
-            .populate('beverageType')
             .populate('recipe.ingredients.ingredient')
+            .populate('beverageType')
             .exec();
         } catch(err) {
             throw err;

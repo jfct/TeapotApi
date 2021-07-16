@@ -64,7 +64,7 @@ const Ingredient    = require('../model/ingredient');
  */
 exports.get = (req, res, next) => {
     try {
-        Beverage.findOne({'name' : req.params.beverage}).then(function (beverage) {
+        Beverage.load(req.params.beverage).then((beverage) => {
             res.status(200).send({
                 success : true,
                 response: beverage
