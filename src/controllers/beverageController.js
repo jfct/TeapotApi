@@ -199,7 +199,10 @@ exports.postChangeRecipe = async (req,res,next) => {
     try {
         let body = req.body;
 
-        if (typeof body == 'object' && body.hasOwnProperty('settings')) {
+
+        // TODO:
+        
+        if (typeof body == 'object' && body.hasOwnProperty('recipe')) {
             let beverage = await Beverage.load(req.params.beverage);
             if (beverage != null) {
                 await beverage.updateRecipe(body.recipe);

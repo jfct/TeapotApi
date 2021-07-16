@@ -127,10 +127,10 @@ Servers variables
 
 The documentation can be found in the API.md file in the root of the project
 
-- [Beverage](APIbeverage.md)
-- [Ingredient](APIingredient.md)
-- [Order](APIorder.md)
-- [Stock](APIstock.md)
+- [Beverage](doc/APIbeverage.md)
+- [Ingredient](doc/APIingredient.md)
+- [Order](doc/APIorder.md)
+- [Stock](doc/APIstock.md)
 
 ----
 
