@@ -1,6 +1,17 @@
 # API - Beverage
 
-[TOC]
+
+- [API - Beverage](#api---beverage)
+    + [Create Beverage](#create-beverage)
+    + [Get beverage list](#get-beverage-list)
+    + [Get specific beverage](#get-specific-beverage)
+    + [Get beverage recipe](#get-beverage-recipe)
+    + [Delete beverage](#delete-beverage)
+    + [Change beverage settings](#change-beverage-settings)
+    + [Change beverage setting](#change-beverage-setting)
+    + [Change beverage recipe](#change-beverage-recipe)
+    + [Change recipe ingredient quantity](#change-recipe-ingredient-quantity)
+
 
 ### Create Beverage
 ----

@@ -1,6 +1,15 @@
 # API - Stock
 
 
+- [API - Stock](#api---stock)
+    + [Add an ingredient to stock](#add-an-ingredient-to-stock)
+    + [Get stock list](#get-stock-list)
+    + [Get ingredient info from stock](#get-ingredient-info-from-stock)
+    + [Add quantity to an ingredient](#add-quantity-to-an-ingredient)
+    + [Remove quantity from an ingredient on stock](#remove-quantity-from-an-ingredient-on-stock)
+    + [Remove an ingredient from the stock](#remove-an-ingredient-from-the-stock)
+
+
 ### Add an ingredient to stock
 ----
 * **URL**

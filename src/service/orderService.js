@@ -165,9 +165,6 @@ module.exports = {
             beverage                = await Beverage.load(order.beverage.name);
 
             await session.withTransaction(async ()=> {
-                console.log(order);
-                console.log(ingredientMultiplier);
-
                 // Remove the extra ingredients
                 for(let idx in order.extraIngredients) {
                     let name        = order.extraIngredients[idx].ingredient.name,
@@ -179,7 +176,6 @@ module.exports = {
                         throw new Error('Invalid ingredient.');
                     }
 
-                    console.log('remove extra', name, quantity)
                     await stock.removeQuantity(name, quantity);
                 }
 
@@ -194,7 +190,6 @@ module.exports = {
                         throw new Error('Invalid ingredient.');
                     }
 
-                    console.log('remove normal', name, quantity * ingredientMultiplier)
                     await stock.removeQuantity(name, quantity * ingredientMultiplier);
                 }
 

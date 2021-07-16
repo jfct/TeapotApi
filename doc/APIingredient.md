@@ -1,6 +1,14 @@
 # API - Ingredient
 
 
+- [API - Ingredient](#api---ingredient)
+    + [Create Ingredient](#create-ingredient)
+    + [Get ingredients list](#get-ingredients-list)
+    + [Get specific ingredient](#get-specific-ingredient)
+    + [Update ingredient unit](#update-ingredient-unit)
+    + [Delete ingredient](#delete-ingredient)
+
+
 ### Create Ingredient
 ----
 * **URL**

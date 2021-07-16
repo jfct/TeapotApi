@@ -83,7 +83,6 @@ IngredientSchema.statics = {
     load: function(name) {
         try {
             if(typeof name !== "string") {
-                console.log(new Error().stack)
                 throw new Error('Invalid name given');
             }
             

@@ -1,6 +1,15 @@
 # API - Order
 
 
+- [API - Order](#api---order)
+    + [Create order](#create-order)
+    + [Get order](#get-order)
+    + [Get current active order list](#get-current-active-order-list)
+    + [Get past orders](#get-past-orders)
+    + [Complete an order](#complete-an-order)
+    + [Cancel an order](#cancel-an-order)
+
+
 ### Create order
 ----
 * **URL**
