@@ -30,6 +30,21 @@
 
 * **Data Params**
   
+```
+{
+	"beverageType": "tea" [String],
+	"settings": {
+		"waterTemp" : 10
+	},
+	"recipe": [{
+		"name"		: "ingredientName" [String],
+		"quantity"	: 5
+	}, {
+		"name"		: "ingredientName" [String],
+		"quantity"	: 5
+	}]
+}
+```
 
 * **Response:**
 	* **Code:** 200
@@ -242,14 +257,17 @@ Change a single setting from the beverage settings
    `beverage=[String]`
 
 * **Data Params**
+
 ```
   {
   	"recipe": {
-		"ingredients": {
-			"ingredient": ingredientName
-			"quantity": value
+		"ingredients": [{
+			"ingredient": {
+				"name": "validIngredient" [String]
+			}
+			"quantity": value [Number]
 		}
-	}
+	}]
   }
 ```
 
@@ -283,9 +301,10 @@ Change the quantity of a single ingredient's recipe
    `ingredient=[String]`
 
 * **Data Params**
+
 ```
   {
-  	"value": value
+	  "quantity": value [Number]
   }
 ```
 

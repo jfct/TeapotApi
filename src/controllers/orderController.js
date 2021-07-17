@@ -80,12 +80,14 @@ exports.getList = async (req, res, next) => {
         });
     }
 }
+
 /**
- * List the ingredients in Stock
+ * List the past completed orders
  * Shows a simplified list of orders
  */
 exports.getPast = async (req, res, next) => {
     try {
+        console.log('pats');
         let list = await Order.simplifiedList({
             'criteria': {
                 'status.completed': true
@@ -104,12 +106,14 @@ exports.getPast = async (req, res, next) => {
         });
     }
 }
+
 /**
  * Shows a single order by id
  * Shows the complete info
  */
  exports.getSingle = async (req, res, next) => {
     try {
+        console.log('sig');
         if(mongoose.Types.ObjectId.isValid(req.params.id)) {
             let list = await Order.list({
                 'criteria': {
@@ -144,7 +148,7 @@ exports.complete = async (req, res, next) => {
         await OrderService.complete(orderId);
         res.status(200).send({
             success : true,
-            response: 'Order '+orderId+' closed.'
+            response: 'Order '+orderId+' completed.'
         });
     } catch (err) {
         console.log(err);

@@ -28,15 +28,15 @@
 * **Data Params**
 ```
   {
-	"size": a size value ex: "small"[String]
-	"user": username[String]
+	"size": "validSize" [String]
+	"user": "username" [String]
 	"extraIngredients": [
 		{
-			"name": an ingredient name [String],
-			"quantity: 2
+			"name": "validIngredient" [String],
+			"quantity: value [Number]
 		},{
-			"name": an ingredient name [String],
-			"quantity: 10
+			"name": "validIngredient" [String],
+			"quantity: value [Number]
 		},
 	]
   }
@@ -57,8 +57,14 @@
 
 ### Get order
 ----
+
+
+
 * **URL**
 /orders/:id
+
+ Shows a single order by id
+ Shows the complete info
 
 * **Method:**
   
@@ -83,6 +89,10 @@
 
 ### Get current active order list
 ----
+
+ List all the active orders
+ Shows a simplified list of orders
+
 * **URL**
 /orders/
 
@@ -108,6 +118,10 @@
 
 ### Get past orders
 ----
+
+ List the past completed orders
+ Shows a simplified list of orders
+
 * **URL**
 /orders/past
 

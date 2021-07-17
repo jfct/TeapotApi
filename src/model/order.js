@@ -59,6 +59,9 @@ OrderSchema.methods = {
      */
     complete: async function() {
         try {
+            if(this.status.active == false) {
+                throw Error('This order is inactive.');
+            }
             this.status.completed   = true;
             this.status.active      = false;
             this.status.completedAt = new Date();
@@ -76,7 +79,14 @@ OrderSchema.methods = {
      */
     cancel: function() {
         try {
-            this.status.completed   = true;
+            if(this.status.completed == true) {
+                throw Error('This order is already completed.');
+            }
+            if(this.status.active == false) {
+                throw Error('This order is already canceled.');
+            }
+            this.status.active      = false;
+            this.status.completed   = false;
             this.status.completedAt = new Date();
             this.markModified('status');
             return this.save();
@@ -160,7 +170,7 @@ OrderSchema.statics = {
             .populate('size', 'name multiplier')
             .populate({
                 path    : 'beverage',
-                select  : 'name',
+                select  : 'name recipe.ingredients.quantity',
                 populate : {
                     path    : 'beverageType',
                     select  : 'name'
@@ -170,7 +180,7 @@ OrderSchema.statics = {
                     select  : 'name quantity'
                 },
             })
-            .select('_id user created extraIngredients.quantity beverage')
+            .select('_id user created extraIngredients.quantity beverage status')
             .exec();
         } catch(err) {
             throw err;

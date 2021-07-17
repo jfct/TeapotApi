@@ -84,12 +84,13 @@ exports.updateUnit = async (req, res, next) => {
     try {
         let ingredientName  = req.params.ingredient,
             newUnit         = req.body.unit,
-            ingredientObj   = Ingredient.load(ingredientName);
+            ingredientObj   = await Ingredient.load(ingredientName);
 
-        await ingredientObj.changeUnit(newUnit);
-        res.status(200).send({
-            success : true,
-            response: 'Unit changed!'
+        ingredientObj.changeUnit(newUnit).then(() => {
+            res.status(200).send({
+                success : true,
+                response: 'Unit changed!'
+            });
         });
     } catch(err) {
         console.log(err);

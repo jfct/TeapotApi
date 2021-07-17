@@ -198,11 +198,12 @@ exports.postChangeSettingComponent = async (req,res,next) => {
 exports.postChangeRecipe = async (req,res,next) => {
     try {
         let body = req.body;
-
-
-        // TODO:
         
-        if (typeof body == 'object' && body.hasOwnProperty('recipe')) {
+        if (
+            typeof body == 'object' 
+            && body.hasOwnProperty('recipe') 
+            && body.recipe.hasOwnProperty('ingredients')
+        ) {
             let beverage = await Beverage.load(req.params.beverage);
             if (beverage != null) {
                 await beverage.updateRecipe(body.recipe);
@@ -237,10 +238,10 @@ exports.postChangeRecipe = async (req,res,next) => {
 exports.postChangeRecipeComponent = async (req,res,next) => {
     try {
         let body        = req.body,
-            value       = body.value,
+            value       = body.quantity,
             ingredient  = req.params.ingredient;
 
-        if (typeof body == 'object' && body.hasOwnProperty('value')) {
+        if (typeof body == 'object' && body.hasOwnProperty('quantity')) {
             let beverage = await Beverage.load(req.params.beverage);
             if (beverage != null) {
                 await beverage.updateRecipeComponent(ingredient, value);

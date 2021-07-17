@@ -1,5 +1,6 @@
-const mongoose  = require('mongoose');
-const Schema    = mongoose.Schema;
+const mongoose      = require('mongoose');
+const Schema        = mongoose.Schema;
+const Ingredient    = require('./ingredient');
 
 /**
  * Beverage schema
@@ -65,8 +66,27 @@ BeverageSchema.methods = {
      */
     updateRecipe: async function(newRecipe) {
         try {
-            this.recipe.ingredients  = newRecipe;
-            return this.save();
+            let recipeObj = {'ingredients' : []};
+            if (
+                typeof newRecipe == 'object' 
+                && newRecipe.hasOwnProperty('ingredients')
+            ) {
+                // Verify each ingredient passed in the ingredients object
+                for(let idx in newRecipe.ingredients) {
+                    let name            = newRecipe.ingredients[idx].ingredient.name,
+                        quantity        = newRecipe.ingredients[idx].quantity,
+                        ingredientObj   = await Ingredient.load(name);
+                    if(ingredientObj == null) {
+                        throw Error("The ingredient("+name+") doesn't exist.");
+                    }
+                    recipeObj.ingredients.push({'ingredient': ingredientObj._id, 'quantity': quantity});
+                }
+                this.recipe = recipeObj;
+                this.markModified('recipe');
+                return this.save();
+            } else {
+                throw Error('The recipe is in an invalid format.');
+            }
         } catch(err) {
             throw err;
         }

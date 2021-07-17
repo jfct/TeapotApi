@@ -8,7 +8,12 @@ const Stock         = require('../model/stock');
     try {
         let ingredientName  = req.params.ingredient,
             body            = req.body;
-            value           = body.value;
+            quantity        = body.quantity,
+            stock           = await Stock.load();
+
+        if(stock == null) {
+            throw Error('No stock is currently initiated.');
+        }
 
         // Check for duplicate before the rest of the process
         let ingredient = Ingredient.find({name: ingredientName});
@@ -20,8 +25,8 @@ const Stock         = require('../model/stock');
             });
         }
         
-        await Stock.addIngredient(ingredientName, value);
-        res.status(200).send('Ingredient ' + ingredientName + '('+value+') added.');
+        await stock.addIngredient(ingredientName, quantity);
+        res.status(200).send('Ingredient ' + ingredientName + '('+quantity+') added.');
     } catch(err) {
         console.log(err);
         res.status(400).send({
@@ -88,15 +93,21 @@ exports.getList = (req, res, next) => {
 exports.add = async (req, res, next) => {
     try {
         let ingredientName  = req.params.ingredient,
-            value           = req.params.quantity,
             stock           = await Stock.load();
-    
-        await stock.addQuantity(ingredientName, value)
 
-        res.status(200).send({
-            success : true,
-            response: 'Added ' + value + ' of ' + ingredientName + ' to stock.'
-        })
+        if(typeof req.body == 'object' && req.body.hasOwnProperty('quantity')) {
+            let value = req.body.quantity;
+
+            await stock.addQuantity(ingredientName, value)
+    
+            res.status(200).send({
+                success : true,
+                response: 'Added ' + value + ' of ' + ingredientName + ' to stock.'
+            })
+        } else {
+            throw Error('The body from the request is invalid.');
+        }
+
     } catch (err) {
         console.log(err);
         res.status(400).send({
@@ -111,15 +122,20 @@ exports.add = async (req, res, next) => {
  exports.remove = async (req, res, next) => {
     try {
         let ingredientName  = req.params.ingredient,
-            value           = req.params.quantity,
             stock           = await Stock.load();
-    
-        await stock.removeQuantity(ingredientName, value)
 
-        res.status(200).send({
-            success : true,
-            response: 'Removed ' + value + ' of ' + ingredientName + ' to stock.'
-        })
+        if(typeof req.body == 'object' && req.body.hasOwnProperty('quantity')) {
+            let value = req.body.quantity;
+
+            await stock.removeQuantity(ingredientName, value)
+    
+            res.status(200).send({
+                success : true,
+                response: 'Removed ' + value + ' of ' + ingredientName + ' to stock.'
+            })
+        } else {
+            throw Error('The body from the request is invalid.');
+        }    
     } catch (err) {
         console.log(err);
         res.status(400).send({

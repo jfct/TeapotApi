@@ -26,9 +26,10 @@
    `ingredient=[String]`
 
 * **Data Params**
+
 ```
   {
-	"value": value
+	"quantity": value [Number]
   }
 ```
   
@@ -102,7 +103,7 @@
 ### Add quantity to an ingredient
 ----
 * **URL**
-/stock/:ingredient/add/:quantity
+/stock/:ingredient/add
 
 * **Method:**
   
@@ -118,6 +119,12 @@
 
 * **Data Params**
 
+```
+  {
+	"quantity": value [Number]
+  }
+```
+
 * **Response:**
 	* **Code:** 200
 	* **Content:** 
@@ -132,7 +139,7 @@
 ### Remove quantity from an ingredient on stock
 ----
 * **URL**
-/stock/:ingredient/remove/:quantity
+/stock/:ingredient/remove
 
 * **Method:**
   
@@ -146,6 +153,12 @@
   
 
 * **Data Params**
+
+```
+  {
+	"quantity": value [Number]
+  }
+```
 
 * **Response:**
 	* **Code:** 200
